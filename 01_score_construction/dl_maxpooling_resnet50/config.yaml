@@ -1,0 +1,51 @@
+﻿# ----------------------------------------------------------------------- #
+#               DL feature survival analysis config - ResNet50 MaxPooling                     #
+# ----------------------------------------------------------------------- #
+
+# Label file (contains ID, group, event, duration)
+label_file: data\label.csv
+
+# DL feature file
+dl_features_file: features\DL_features.csv
+
+# Clinical data file
+clinic_file: data\clinical.csv
+
+# Column name used to indicate the cohort
+dataset_column: group
+
+# Column name for death/recurrence status
+event_col: event
+
+# Survival time column name
+duration_col: duration
+
+# Cohort set
+subsets: [train, test1, test2]
+
+# Model summary
+summary_models: [DL, Clinical, Combined]
+
+# DL feature information
+dl_model_name: ResNet50
+dl_aggregation: MaxPooling
+dl_feature_dim: 2048
+
+# PCA configuration
+pca_components: 50
+
+# Correlation coefficient type (pearson or spearman)
+corr_name: pearson
+
+# Elastic Net configuration
+l1_ratio: 0.5
+cv_folds: 10
+
+# Time Dependent settings
+time_settings:
+  5Year: 60
+  4Year: 48
+  3Year: 36
+  2Year: 24
+  1Year: 12
+

@@ -1,0 +1,11 @@
+# Current max-H2 statistical pipeline. Use Python 3.12.
+# Core pins match the archived analysis manifests; the remaining pins identify
+# the independently tested release environment, not undocumented historical versions.
+numpy==2.4.3
+pandas==2.3.3
+scikit-learn==1.7.2
+scikit-survival==0.26.0
+lifelines==0.30.0
+scipy==1.18.1
+statsmodels==0.15.0
+matplotlib==3.11.2

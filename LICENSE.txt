@@ -1,0 +1,23 @@
+Copyright (c) 2026, The First Affiliated Hospital of Guangxi Medical University.
+All rights reserved.
+
+The First Affiliated Hospital of Guangxi Medical University
+Nanning, Guangxi, China
+
+---
+All code included in this repository has been developed for research purposes
+only. It is provided "as is", without warranty of any kind, for the sole purpose
+of supporting and reproducing the analyses reported in the associated manuscript.
+Any clinical or commercial use is not intended and not permitted without prior
+written permission from the copyright holder.
+---
+
+The following third-party packages, required to run the code, have been developed
+by other authors and are distributed under their own licenses:
+
+- PyRadiomics (van Griethuysen et al., 2017)            — BSD-3-Clause
+- PyTorch / torchvision (ImageNet-pretrained backbones) — BSD-style
+- lifelines, scikit-survival, scikit-learn, scipy,
+  numpy, pandas, matplotlib, seaborn                   — their respective OSI licenses
+- OneKey radiomics platform (OnekeyAI Lab, www.medai.icu)
+  — base framework for the feature-extraction / selection notebooks

@@ -1,0 +1,56 @@
+# PyRadiomics v3.0 Feature Extraction Configuration
+# Matches manuscript: "Five-Dimensional Fusion Score Construction" section
+# Reference: Van Griethuysen et al., Cancer Research, 2017
+# IBSI-compliant parameters (Zwanenburg et al., Radiology, 2020)
+
+setting:
+  # Resampling: 1×1×1 mm³ isotropic voxels, B-spline interpolation
+  resampledPixelSpacing: [1, 1, 1]
+  interpolator: sitkBSpline
+  resegmentRange: [-100, 400]  # Intensity truncation: -100 to 400 HU
+  
+  # Intensity discretization: fixed bin width = 25 HU
+  binWidth: 25
+  
+  # Normalization disabled (intensity standardization via windowing only)
+  normalize: false
+  
+  # Minimum ROI size
+  minimumROIDimensions: 2
+  minimumROISize: 10
+  
+  # Force 2D extraction disabled (3D features)
+  force2D: false
+  force2Ddimension: 0
+  
+  # Label value for tumor ROI
+  label: 1
+
+# Image types (18 filter types as described in manuscript)
+imageType:
+  Original: {}
+  
+  # Wavelet: 8 decompositions (LLL, LLH, LHL, LHH, HLL, HLH, HHL, HHH)
+  Wavelet: {}
+  
+  # Laplacian of Gaussian: sigma = 1, 2, 3 mm
+  LoG:
+    sigma: [1.0, 2.0, 3.0]
+  
+  # Additional filters
+  Logarithm: {}
+  Exponential: {}
+  Square: {}
+  SquareRoot: {}
+  Gradient: {}
+  LBP3D: {}
+
+# Feature classes (7 classes)
+featureClass:
+  firstorder:  # First-order statistics
+  glcm:        # Gray-Level Co-occurrence Matrix
+  glrlm:       # Gray-Level Run-Length Matrix
+  glszm:       # Gray-Level Size Zone Matrix
+  gldm:        # Gray-Level Dependence Matrix
+  ngtdm:       # Neighboring Gray-Tone Difference Matrix
+  shape:       # Shape features (3D)

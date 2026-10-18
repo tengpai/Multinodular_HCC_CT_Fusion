@@ -1,0 +1,53 @@
+# ----------------------------------------------------------------------- #
+#                                                                         #
+#                               YAML file syntax                               #
+#                       http://medai.icu/thread/677                       #
+#                                                                         #
+# ----------------------------------------------------------------------- #
+# Your own imaging data [directory]
+radio_dir: <RADIO_DATA_ROOT>\1.raido_data\P
+# Must contain group information; for single-center | multi-center you need to generate an internal validation set using Step0.
+label_file: <PROJECT_ROOT>\sol14_traditional_radiomics_survival\data\label.csv
+# Column name used to indicate the cohort
+dataset_column: group
+# Column name for death/recurrence status; must not contain null values
+event_col: event
+# Survival time column name
+duration_col: duration
+
+# Location of the feature extraction config file; usually the same~
+extractor_settings: 
+# Whether to use fractal dimension features; the ROI is slightly larger; not useful for ultrasound~
+with_fd: False
+
+extractor_settings: 
+clinic_file: <PROJECT_ROOT>\sol14_traditional_radiomics_survival\data\clinical.csv
+# All groups to be evaluated; remember you must include train
+
+# Cohort set
+subsets: [train, test1, test2]
+summary_models: [Clinical, Radiomics, Combined]
+
+# Time Dependent settings
+time_settings:
+  5Year: 60
+  4Year: 48
+  3Year: 36
+  2Year: 24
+  1Year: 12
+
+# Options 
+# 1. HR: cutoff based on the patient HR predicted by the Cox model; HR>1 high risk, HR<1 low risk
+# 2. HRQuantile: cutoff based on HR quantiles.
+# 3. SurvivalQuantile: cutoff based on within-group survival time.
+# 4. SelfDefined: custom-defined via Xtile.
+cutoff_type: HR
+# Only effective when cutoff_type = SelfDefined
+xtile_cutoff:
+  train: 
+  test: 
+
+# Basic settings
+font.size: 12
+DISABLE_VIDEO: True
+PAPER_TMP: RadiomicsSur

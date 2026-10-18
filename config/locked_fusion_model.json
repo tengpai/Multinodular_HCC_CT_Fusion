@@ -1,0 +1,193 @@
+{
+  "schema_version": 1,
+  "manuscript_title": "CT-based Tumor Heterogeneity Fusion Model for Prognosis in Multinodular Hepatocellular Carcinoma: A Multicenter Study",
+  "habitat_candidate": "max-H2",
+  "higher_score": "higher risk",
+  "clinical_score": {
+    "clinical_variables": [
+      "Child_Pugh",
+      "Gender",
+      "Total_SLD_cm",
+      "Age",
+      "Diabetes",
+      "AFP",
+      "CA199",
+      "Lesion_Count",
+      "Hepatitis_C"
+    ],
+    "coefficients": {
+      "Child_Pugh": 0.05216377863706371,
+      "Gender": -0.08584526814939075,
+      "Total_SLD_cm": 0.055945769526558754,
+      "Age": -0.01224794704955613,
+      "Diabetes": -0.47984641386175014,
+      "AFP": 0.44052989145832006,
+      "CA199": 0.4551175929171956,
+      "Lesion_Count": 0.0967717809459435,
+      "Hepatitis_C": -1.3707163875179642
+    },
+    "scaler_mean": [
+      0.07801418439716312,
+      0.8581560283687943,
+      8.497705177304965,
+      51.59574468085106,
+      0.08156028368794327,
+      0.3049645390070922,
+      0.13829787234042554,
+      2.234042553191489,
+      0.014184397163120567
+    ],
+    "scaler_scale": [
+      0.26819390639984453,
+      0.34889003904252036,
+      4.450518924402011,
+      10.94763728089778,
+      0.2736936312972691,
+      0.46039240757780087,
+      0.3452123561614458,
+      0.541056202064132,
+      0.1182505815640643
+    ]
+  },
+  "fusion_models": {
+    "Clinical-only": {
+      "model_name": "Clinical-only",
+      "predictors": [
+        "Clinical_Score"
+      ],
+      "scalers": {
+        "Clinical_Score": {
+          "mean": 2.519655091347873e-17,
+          "scale": 1.6141721525951538
+        }
+      },
+      "coefficients": {
+        "Clinical_Score_Z": 0.5670953394168812
+      },
+      "n_train": 282,
+      "penalizer": 0.01,
+      "cutoff_train_median": -0.02933669862301165
+    },
+    "Clinical_RadDiff_DLHet": {
+      "model_name": "Clinical_RadDiff_DLHet",
+      "predictors": [
+        "Clinical_Score",
+        "Rad_Diff_HighRisk",
+        "DL_Heterogeneity"
+      ],
+      "scalers": {
+        "Clinical_Score": {
+          "mean": 2.519655091347873e-17,
+          "scale": 1.6141721525951538
+        },
+        "Rad_Diff_HighRisk": {
+          "mean": -40.10187977699392,
+          "scale": 15.232647520792089
+        },
+        "DL_Heterogeneity": {
+          "mean": 1.126241042857079,
+          "scale": 0.7549282624570515
+        }
+      },
+      "coefficients": {
+        "Clinical_Score_Z": 0.38823625256981,
+        "Rad_Diff_HighRisk_Z": 0.30442278109751414,
+        "DL_Heterogeneity_Z": 0.25153929564426786
+      },
+      "n_train": 282,
+      "penalizer": 0.01,
+      "cutoff_train_median": -0.054157338141713196
+    },
+    "Four-score_without_Habitat": {
+      "model_name": "Four-score_without_Habitat",
+      "predictors": [
+        "Clinical_Score",
+        "Rad_Diff_HighRisk",
+        "DL_Heterogeneity",
+        "DL_MaxPooling"
+      ],
+      "scalers": {
+        "Clinical_Score": {
+          "mean": 2.519655091347873e-17,
+          "scale": 1.6141721525951538
+        },
+        "Rad_Diff_HighRisk": {
+          "mean": -40.10187977699392,
+          "scale": 15.232647520792089
+        },
+        "DL_Heterogeneity": {
+          "mean": 1.126241042857079,
+          "scale": 0.7549282624570515
+        },
+        "DL_MaxPooling": {
+          "mean": 1.383156820233281,
+          "scale": 2.0021333023081818
+        }
+      },
+      "coefficients": {
+        "Clinical_Score_Z": 0.3541377310863803,
+        "Rad_Diff_HighRisk_Z": 0.2911038935425755,
+        "DL_Heterogeneity_Z": 0.18881820321379567,
+        "DL_MaxPooling_Z": 0.23305426720255124
+      },
+      "n_train": 282,
+      "penalizer": 0.01,
+      "cutoff_train_median": -0.06661689732974745
+    },
+    "Full_five-score_Fusion": {
+      "model_name": "Full_five-score_Fusion",
+      "predictors": [
+        "Clinical_Score",
+        "Rad_Diff_HighRisk",
+        "DL_Heterogeneity",
+        "DL_MaxPooling",
+        "Habitat_Score"
+      ],
+      "scalers": {
+        "Clinical_Score": {
+          "mean": 2.519655091347873e-17,
+          "scale": 1.6141721525951538
+        },
+        "Rad_Diff_HighRisk": {
+          "mean": -40.10187977699392,
+          "scale": 15.232647520792089
+        },
+        "DL_Heterogeneity": {
+          "mean": 1.126241042857079,
+          "scale": 0.7549282624570515
+        },
+        "DL_MaxPooling": {
+          "mean": 1.383156820233281,
+          "scale": 2.0021333023081818
+        },
+        "Habitat_Score": {
+          "mean": -4.5556992339302716e-10,
+          "scale": 0.5059086551339583
+        }
+      },
+      "coefficients": {
+        "Clinical_Score_Z": 0.32242761636868816,
+        "Rad_Diff_HighRisk_Z": 0.1656812929840579,
+        "DL_Heterogeneity_Z": 0.16680439994871504,
+        "DL_MaxPooling_Z": 0.2114213646982658,
+        "Habitat_Score_Z": 0.32139431681209896
+      },
+      "n_train": 282,
+      "penalizer": 0.01,
+      "cutoff_train_median": -0.08050268768620825
+    }
+  },
+  "reference_environment": {
+    "numpy": "2.4.3",
+    "pandas": "2.3.3",
+    "lifelines": "0.30.0",
+    "scikit-learn": "1.7.2"
+  },
+  "endpoints": {
+    "train": "RFS",
+    "test1": "RFS",
+    "test2": "PFS exploratory transfer"
+  },
+  "source_manifest_sha256": "a7d5603c426561def4d4551eaf8b446c34e8ff50674abf2e17cd943003556b60",
+  "scope": "Aggregate model parameters only; no patient records, feature matrices or outcome rows."
+}

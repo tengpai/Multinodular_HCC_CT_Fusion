@@ -1,0 +1,40 @@
+# Data (restricted — never commit)
+*.nii
+*.nii.gz
+*.dcm
+*.csv
+*.xlsx
+data/
+features/
+img/
+img1/
+img2/
+result1/
+result2/
+results/
+figures/
+*.npy
+*.pkl
+
+# Notebook execution outputs / checkpoints
+.ipynb_checkpoints/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Private arrays, model states, validation outputs and temporary files
+*.npz
+*.pickle
+*.parquet
+*.feather
+*.partial
+private/
+validation_outputs/
