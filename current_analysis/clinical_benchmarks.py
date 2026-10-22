@@ -62,7 +62,7 @@ def bootstrap_scores(times, events, scores, rng, resamples=2000):
     return points, boots
 
 
-def evaluate(frame, resamples=2000, seed=20260718):
+def evaluate(frame, resamples=2000, seed=20261019):
     required = {"group", "duration", "event", *MODEL_COLUMNS.values()}
     if not required.issubset(frame.columns):
         raise ValueError(f"Missing columns: {sorted(required - set(frame.columns))}")
@@ -108,7 +108,7 @@ def main():
     points.to_csv(args.output / "cohort_cindex.csv", index=False)
     differences.to_csv(args.output / "paired_cindex_differences.csv", index=False)
     (args.output / "method.json").write_text(json.dumps({
-        "seed": 20260718, "resamples": args.resamples, "refitting": False,
+        "seed": 20261019, "resamples": args.resamples, "refitting": False,
         "paired": True, "random_stream": "sequential train/test1/test2",
         "test2_interpretation": "exploratory transfer; do not pool with RFS cohorts",
         "intervals": "unadjusted percentile intervals; no blanket superiority claim",

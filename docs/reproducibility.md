@@ -21,8 +21,8 @@ python -m current_analysis.fusion_locked_core --habitat-dir /path/habitat_run --
 python -m current_analysis.fusion_statistics --scores /path/fusion_run/fusion_scores_locked.csv --output /path/statistics
 python -m current_analysis.clinical_benchmarks --input /path/evaluation_input.csv --output /path/benchmarks
 python -m current_analysis.complementarity --scores /path/fusion_run/fusion_scores_locked.csv --manifest /path/fusion_run/fusion_core_manifest.json --output /path/complementarity
-python -m current_analysis.probability_diagnostics --scores /path/fusion_run/fusion_scores_locked.csv --output /path/probability
-python -m current_analysis.fusion_diagnostics --scores /path/fusion_run/fusion_scores_locked.csv --manifest /path/fusion_run/fusion_core_manifest.json --output /path/diagnostics --bootstrap 1000
+python -m current_analysis.probability_diagnostics --scores /path/fusion_run/fusion_scores_locked.csv --clinical-input /path/fusion_input.csv --output /path/probability
+python -m current_analysis.fusion_diagnostics --scores /path/fusion_run/fusion_scores_locked.csv --manifest /path/fusion_run/fusion_core_manifest.json --output /path/diagnostics --bootstrap 1000 --clinical-input /path/fusion_input.csv
 ```
 
 Run `python -m MODULE --help` for arguments. Input definitions are in
@@ -30,8 +30,7 @@ Run `python -m MODULE --help` for arguments. Input definitions are in
 training set only. Validation patients do not alter them. Clinical benchmarks use
 the same patients and endpoint within each cohort. Model contribution and
 permutation importance describe the fixed model and do not refit a reduced model.
-Calibration probabilities use a training-fitted Cox model with each locked score
-as its sole predictor. The fusion-stage bootstrap keeps component scores fixed.
+Fusion calibration probabilities use a training-fitted Cox model with each score as its sole predictor; the joint clinical model uses its native baseline. The clinical-plus-fusion bootstrap requires original clinical inputs, refits those two stages, and fixes the four imaging scores. The score-only bootstrap is retained as a narrower diagnostic and is not the manuscript internal-validation estimate.
 
 The feature-extraction notebooks require the original OneKey environment.
 The statistical commands require the approved feature/score tables and artifacts;

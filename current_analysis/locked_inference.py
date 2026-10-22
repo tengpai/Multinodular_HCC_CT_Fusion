@@ -29,7 +29,7 @@ def numeric_columns(frame, columns):
 
 
 def clinical_score(frame, parameters):
-    """Weights fitted on original-coded variables, applied to Train-standardized values."""
+    """Apply centered joint-Cox weights (or explicitly labeled standardized-univariable sensitivity weights)."""
     spec = parameters["clinical_score"]
     columns = spec["clinical_variables"]
     values = numeric_columns(frame, columns)

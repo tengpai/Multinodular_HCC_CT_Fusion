@@ -5,7 +5,7 @@ title: "Multinodular HCC CT fusion analysis"
 authors:
   - family-names: Teng
     given-names: Xiong
-version: 1.0.0
-date-released: 2026-10-18
+version: 2.0.0
+date-released: 2026-10-20
 url: "https://github.com/tengpai/Multinodular_HCC_CT_Fusion"
 repository-code: "https://github.com/tengpai/Multinodular_HCC_CT_Fusion"

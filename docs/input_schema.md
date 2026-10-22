@@ -11,9 +11,8 @@ Required component columns: `Clinical_Score`, `Rad_Diff_HighRisk`,
 it must be unique. All required scores must be finite numbers. They are the
 **unstandardized component scores** before fusion-stage standardization.
 
-- `Clinical_Score`: nine-variable weighted score. Separate training-set
-  univariable Cox models (L2 0.1) estimated weights on the original-coded inputs;
-  these weights were applied to training-standardized variables.
+- `Clinical_Score`: centered linear predictor from the training-fitted nine-variable joint Cox model in the main analysis. Apply the frozen original-coded means and coefficients. Correctly standardized univariable weighting is provided separately as sensitivity.
+
 - `Rad_Diff_HighRisk`: negative model-predicted expected survival time from the
   12-feature Rad_Diff Cox model (L2 0.1), not its linear predictor. Higher is riskier.
 - `DL_Heterogeneity`, `DL_MaxPooling`: the original locked component scores.

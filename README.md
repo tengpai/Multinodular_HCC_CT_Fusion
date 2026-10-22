@@ -9,6 +9,10 @@ component correlation/VIF, model contribution, calibration, proportional-hazards
 diagnostics and fusion-stage bootstrap validation. Scientific analysis functions
 are retained from the study code; this distribution reorganizes their public scope.
 
+## Clinical-score correction
+
+Release clinical-correction-20261020 uses the training-fitted nine-variable joint Cox linear predictor as the main clinical score. A separate parameter file records correctly standardized univariable weighting as a post hoc sensitivity analysis. The four imaging scores and habitat candidate are unchanged. This is a methodological correction evaluated on previously examined external cohorts, not new prospective validation.
+
 ## Installation
 
 Use Python 3.12 in an isolated environment. From the repository root:
@@ -55,8 +59,7 @@ Exact study reproduction requires the approved inputs and locked artifacts.
 
 The surgical cohorts evaluate recurrence-free survival. The nonsurgical cohort
 evaluates exploratory progression-free-survival transfer and is analyzed
-separately. Bootstrap validation of the fusion stage fixes the component scores;
-it does not repeat their upstream feature selection.
+separately. Bootstrap validation refits the clinical and fusion stages while fixing the four imaging scores and the clinical variable list; upstream feature selection and imputation are not repeated. Sparse-category warnings must be retained and reviewed.
 
 ## Citation and license
 

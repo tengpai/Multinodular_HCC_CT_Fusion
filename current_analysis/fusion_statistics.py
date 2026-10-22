@@ -13,7 +13,7 @@ from lifelines.utils import concordance_index
 PROJECT_DIR = None
 INPUT = None
 OUTPUT_DIR = None
-SEED = 20260718
+SEED = 20261019
 N_BOOTSTRAP = 2000
 MODELS = {
     "Clinical-only": "Clinical-only_Score",

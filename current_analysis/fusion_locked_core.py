@@ -89,28 +89,48 @@ def transform_habitat(features: pd.DataFrame, state: dict) -> pd.DataFrame:
     return transformed
 
 
-def build_clinical_scores(frame: pd.DataFrame) -> tuple[pd.DataFrame, dict]:
+def build_clinical_scores(frame: pd.DataFrame, method="joint", fit_options=None) -> tuple[pd.DataFrame, dict]:
+    """Training-only joint Cox LP; standardized univariable weighting is sensitivity."""
     train = frame.loc[frame["group"] == "train"].copy()
-    scaler = StandardScaler()
-    scaler.fit(train[CLINICAL_VARS])
-    all_scaled = scaler.transform(frame[CLINICAL_VARS])
-    coefficients = {}
-    univariate = []
-    for index, variable in enumerate(CLINICAL_VARS):
-        fit_frame = train[["duration", "event", variable]].dropna().copy()
-        model = CoxPHFitter(penalizer=0.1)
-        model.fit(fit_frame, duration_col="duration", event_col="event")
-        coefficients[variable] = float(model.params_[variable])
-        univariate.append({"variable": variable, "coefficient": float(model.params_[variable]), "p": float(model.summary.loc[variable, "p"])})
-    score = np.zeros(len(frame), dtype=float)
-    for index, variable in enumerate(CLINICAL_VARS):
-        score += coefficients[variable] * all_scaled[:, index]
+    if train.empty:
+        raise ValueError("A non-empty training group is required")
+    values = frame[CLINICAL_VARS].apply(pd.to_numeric, errors="raise")
+    if not np.isfinite(values.to_numpy()).all():
+        raise ValueError("Clinical inputs must be finite; inference never silently imputes")
+    active = [v for v in CLINICAL_VARS if train[v].std() > 1e-12]
+    if not active:
+        raise ValueError("No varying clinical variables")
+    means = train[CLINICAL_VARS].mean().to_numpy()
+    scales = np.ones(len(CLINICAL_VARS))
+    beta = np.zeros(len(CLINICAL_VARS))
+    if method == "joint":
+        fit = train[["duration", "event"] + active].copy()
+        model = CoxPHFitter().fit(fit, duration_col="duration", event_col="event", fit_options=fit_options)
+        for v in active:
+            beta[CLINICAL_VARS.index(v)] = model.params_[v]
+    elif method == "standardized_univ":
+        scaler = StandardScaler().fit(train[CLINICAL_VARS])
+        means, scales = scaler.mean_, scaler.scale_
+        z = scaler.transform(train[CLINICAL_VARS])
+        for v in active:
+            j = CLINICAL_VARS.index(v)
+            fit = train[["duration", "event"]].copy()
+            fit[v] = z[:, j]
+            model = CoxPHFitter(penalizer=0.1).fit(fit, duration_col="duration", event_col="event", fit_options=fit_options)
+            beta[j] = model.params_[v]
+    else:
+        raise ValueError("method must be joint or standardized_univ")
     result = frame.copy()
-    result["Clinical_Score"] = score
-    return result, {"clinical_variables": CLINICAL_VARS, "coefficients": coefficients, "univariate": univariate, "scaler_mean": scaler.mean_.tolist(), "scaler_scale": scaler.scale_.tolist()}
+    result["Clinical_Score"] = ((values.to_numpy() - means) / scales) @ beta
+    metadata = {"method": method, "clinical_variables": CLINICAL_VARS,
+                "coefficients": dict(zip(CLINICAL_VARS, map(float, beta))),
+                "scaler_mean": means.tolist(), "scaler_scale": scales.tolist(),
+                "constant_variables": sorted(set(CLINICAL_VARS) - set(active)),
+                "scope": "Post hoc clinical-score correction; four imaging scores unchanged"}
+    return result, metadata
 
 
-def fit_model(frame: pd.DataFrame, model_name: str, predictors: list[str]) -> tuple[dict, pd.DataFrame]:
+def fit_model(frame: pd.DataFrame, model_name: str, predictors: list[str], fit_options=None) -> tuple[dict, pd.DataFrame]:
     train = frame.loc[frame["group"] == "train"].copy()
     scalers = {}
     z_columns = []
@@ -122,7 +142,7 @@ def fit_model(frame: pd.DataFrame, model_name: str, predictors: list[str]) -> tu
         z_columns.append(f"{predictor}_Z")
     fit_frame = train[["duration", "event"] + z_columns].dropna()
     model = CoxPHFitter(penalizer=0.01)
-    model.fit(fit_frame, duration_col="duration", event_col="event")
+    model.fit(fit_frame, duration_col="duration", event_col="event", fit_options=fit_options)
     frame[f"{model_name}_Score"] = model.predict_log_partial_hazard(frame[z_columns]).to_numpy().reshape(-1)
     return {"model_name": model_name, "predictors": predictors, "scalers": scalers, "coefficients": {column: float(model.params_[column]) for column in z_columns}, "n_train": int(len(fit_frame)), "penalizer": 0.01}, frame
 
@@ -152,12 +172,6 @@ def main() -> None:
     transformed_habitat = transform_habitat(habitat_features, habitat_state)
     frame["Habitat_Score"] = habitat_state["cox_model"].predict_log_partial_hazard(transformed_habitat).to_numpy().reshape(-1)
     frame, clinical_metadata = build_clinical_scores(frame)
-    expected_legacy_cindex = {"train": 0.6282491000311801, "test1": 0.5853217642805495, "test2": 0.5918735458910257}
-    reproduced_legacy_cindex = {group: c_index(frame.loc[frame["group"] == group], "Clinical_Score") for group in expected_legacy_cindex}
-    if any(abs(reproduced_legacy_cindex[group] - expected_legacy_cindex[group]) > 1e-12 for group in expected_legacy_cindex):
-        raise RuntimeError(f"Original Clinical Score reproduction failed: {reproduced_legacy_cindex}")
-    clinical_metadata["reproduced_legacy_cindex"] = reproduced_legacy_cindex
-    clinical_metadata["expected_legacy_cindex"] = expected_legacy_cindex
     model_metadata = {}
     result_rows = []
     for model_name, predictors in MODEL_DEFINITIONS.items():
@@ -170,7 +184,7 @@ def main() -> None:
     result_frame = pd.DataFrame(result_rows)
     result_frame.to_csv(OUTPUT_DIR / "fusion_core_cindex.csv", index=False, encoding="utf-8-sig")
     frame[["ID", "group", "event", "duration"] + SCORE_COLUMNS + [f"{name}_Score" for name in MODEL_DEFINITIONS]].to_csv(OUTPUT_DIR / "fusion_scores_locked.csv", index=False, encoding="utf-8-sig")
-    write_json(OUTPUT_DIR / "fusion_core_manifest.json", {"status": "complete", "started_at": started, "finished_at": utc_now(), "fusion_input": str(FUSION_INPUT), "fusion_input_sha256": source_hash, "habitat_lock_manifest_sha256": sha256(HABITAT_MANIFEST), "habitat_candidate": manifest["candidate"], "models": MODEL_DEFINITIONS, "clinical_metadata": clinical_metadata, "model_metadata": model_metadata, "packages": package_versions(), "test1_policy": "Test1 evaluated once after verifying the Habitat lock; no Test1 result participates in model or cutoff selection.", "test2_policy": "Test2 is exploratory PFS migration and is not averaged with Test1 or used for selection."})
+    write_json(OUTPUT_DIR / "fusion_core_manifest.json", {"status": "complete", "started_at": started, "finished_at": utc_now(), "fusion_input": str(FUSION_INPUT), "fusion_input_sha256": source_hash, "habitat_lock_manifest_sha256": sha256(HABITAT_MANIFEST), "habitat_candidate": manifest["candidate"], "models": MODEL_DEFINITIONS, "clinical_metadata": clinical_metadata, "model_metadata": model_metadata, "packages": package_versions(), "test1_policy": "Post hoc corrected fusion evaluated on previously examined Test1; the correction was methodologically motivated, not selected by external performance.", "test2_policy": "Test2 is exploratory PFS migration and is not averaged with Test1 or used for selection."})
     print(result_frame.to_string(index=False))
 
 

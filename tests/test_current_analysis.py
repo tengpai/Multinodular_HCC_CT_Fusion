@@ -46,7 +46,7 @@ class LockedInferenceTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             predict_fusion(frame, self.parameters)
 
-    def test_clinical_score_uses_locked_original_scale_weights(self):
+    def test_clinical_score_applies_frozen_centered_coefficients(self):
         spec = self.parameters["clinical_score"]
         frame = pd.DataFrame([spec["scaler_mean"]], columns=spec["clinical_variables"])
         self.assertAlmostEqual(clinical_score(frame, self.parameters).iloc[0], 0.)

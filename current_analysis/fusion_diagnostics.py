@@ -1,4 +1,4 @@
-"""Numeric PH and Harrell bootstrap diagnostics with fixed component scores."""
+"""PH diagnostics and clinical-plus-fusion validation, with a legacy fusion-only option."""
 import argparse
 import json
 from pathlib import Path
@@ -77,6 +77,7 @@ def main():
     p.add_argument("--manifest", type=Path, required=True)
     p.add_argument("--output", type=Path, required=True)
     p.add_argument("--bootstrap", type=int, default=1000)
+    p.add_argument("--clinical-input", type=Path)
     args = p.parse_args()
     metadata = json.loads(args.manifest.read_text(encoding="utf-8"))
     models = metadata.get("model_metadata", metadata.get("fusion_models"))
@@ -85,7 +86,23 @@ def main():
     scores = pd.read_csv(args.scores)
     args.output.mkdir(parents=True, exist_ok=True)
     ph_diagnostics(scores, models).to_csv(args.output / "ph_numeric.csv", index=False)
-    result = bootstrap_optimism(scores, models["Full_five-score_Fusion"], args.bootstrap)
+    if args.clinical_input is None:
+        result = bootstrap_optimism(scores, models["Full_five-score_Fusion"], args.bootstrap)
+        result["scope_warning"] = "Fusion-only diagnostic; not the corrected manuscript bootstrap"
+    else:
+        from .clinical_fusion_validation import bootstrap_clinical_fusion
+        from .fusion_locked_core import CLINICAL_VARS
+        raw = pd.read_csv(args.clinical_input)
+        joined = scores.merge(raw[["ID"] + CLINICAL_VARS], on="ID", validate="one_to_one")
+        records = bootstrap_clinical_fusion(joined[joined.group == "train"], args.bootstrap)
+        successful = [r for r in records if not r.get("error")]
+        training = joined[joined.group == "train"]
+        apparent = float(concordance_index(training.duration, -training["Full_five-score_Fusion_Score"], training.event))
+        mean = float(np.mean([r["optimism"] for r in successful]))
+        result = {"apparent": apparent, "mean_optimism": mean, "corrected": apparent - mean,
+                  "requested_replicates": args.bootstrap, "successful_replicates": len(successful),
+                  "warnings_in_resamples": sum(bool(r.get("warnings")) for r in records),
+                  "scope": "Refit clinical and fusion stages; four image scores fixed", "records": records}
     (args.output / "bootstrap_optimism.json").write_text(json.dumps(result, indent=2), encoding="utf-8")
 
 

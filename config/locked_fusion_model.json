@@ -4,6 +4,7 @@
   "habitat_candidate": "max-H2",
   "higher_score": "higher risk",
   "clinical_score": {
+    "method": "joint",
     "clinical_variables": [
       "Child_Pugh",
       "Gender",
@@ -16,15 +17,15 @@
       "Hepatitis_C"
     ],
     "coefficients": {
-      "Child_Pugh": 0.05216377863706371,
-      "Gender": -0.08584526814939075,
-      "Total_SLD_cm": 0.055945769526558754,
-      "Age": -0.01224794704955613,
-      "Diabetes": -0.47984641386175014,
-      "AFP": 0.44052989145832006,
-      "CA199": 0.4551175929171956,
-      "Lesion_Count": 0.0967717809459435,
-      "Hepatitis_C": -1.3707163875179642
+      "Child_Pugh": 0.2175240973726896,
+      "Gender": -0.001984007804475279,
+      "Total_SLD_cm": 0.055223984467661656,
+      "Age": -0.012560172435548064,
+      "Diabetes": -0.5531318672359559,
+      "AFP": 0.2729231743075151,
+      "CA199": 0.7031486483660119,
+      "Lesion_Count": -0.04076768491120004,
+      "Hepatitis_C": -1.6047396255334037
     },
     "scaler_mean": [
       0.07801418439716312,
@@ -38,15 +39,15 @@
       0.014184397163120567
     ],
     "scaler_scale": [
-      0.26819390639984453,
-      0.34889003904252036,
-      4.450518924402011,
-      10.94763728089778,
-      0.2736936312972691,
-      0.46039240757780087,
-      0.3452123561614458,
-      0.541056202064132,
-      0.1182505815640643
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
     ]
   },
   "fusion_models": {
@@ -57,16 +58,16 @@
       ],
       "scalers": {
         "Clinical_Score": {
-          "mean": 2.519655091347873e-17,
-          "scale": 1.6141721525951538
+          "mean": -8.582575154903692e-17,
+          "scale": 0.4950901469927371
         }
       },
       "coefficients": {
-        "Clinical_Score_Z": 0.5670953394168812
+        "Clinical_Score_Z": 0.4872724486570031
       },
       "n_train": 282,
       "penalizer": 0.01,
-      "cutoff_train_median": -0.02933669862301165
+      "cutoff_train_median": -0.07224938969786479
     },
     "Clinical_RadDiff_DLHet": {
       "model_name": "Clinical_RadDiff_DLHet",
@@ -77,8 +78,8 @@
       ],
       "scalers": {
         "Clinical_Score": {
-          "mean": 2.519655091347873e-17,
-          "scale": 1.6141721525951538
+          "mean": -8.582575154903692e-17,
+          "scale": 0.4950901469927371
         },
         "Rad_Diff_HighRisk": {
           "mean": -40.10187977699392,
@@ -90,13 +91,13 @@
         }
       },
       "coefficients": {
-        "Clinical_Score_Z": 0.38823625256981,
-        "Rad_Diff_HighRisk_Z": 0.30442278109751414,
-        "DL_Heterogeneity_Z": 0.25153929564426786
+        "Clinical_Score_Z": 0.3210644928359954,
+        "Rad_Diff_HighRisk_Z": 0.2458303959908723,
+        "DL_Heterogeneity_Z": 0.2252467156122476
       },
       "n_train": 282,
       "penalizer": 0.01,
-      "cutoff_train_median": -0.054157338141713196
+      "cutoff_train_median": -0.08748804361191467
     },
     "Four-score_without_Habitat": {
       "model_name": "Four-score_without_Habitat",
@@ -108,8 +109,8 @@
       ],
       "scalers": {
         "Clinical_Score": {
-          "mean": 2.519655091347873e-17,
-          "scale": 1.6141721525951538
+          "mean": -8.582575154903692e-17,
+          "scale": 0.4950901469927371
         },
         "Rad_Diff_HighRisk": {
           "mean": -40.10187977699392,
@@ -125,14 +126,14 @@
         }
       },
       "coefficients": {
-        "Clinical_Score_Z": 0.3541377310863803,
-        "Rad_Diff_HighRisk_Z": 0.2911038935425755,
-        "DL_Heterogeneity_Z": 0.18881820321379567,
-        "DL_MaxPooling_Z": 0.23305426720255124
+        "Clinical_Score_Z": 0.27108242853828196,
+        "Rad_Diff_HighRisk_Z": 0.24667389281161953,
+        "DL_Heterogeneity_Z": 0.17312383482185045,
+        "DL_MaxPooling_Z": 0.20963608291724997
       },
       "n_train": 282,
       "penalizer": 0.01,
-      "cutoff_train_median": -0.06661689732974745
+      "cutoff_train_median": -0.12553182010480923
     },
     "Full_five-score_Fusion": {
       "model_name": "Full_five-score_Fusion",
@@ -145,8 +146,8 @@
       ],
       "scalers": {
         "Clinical_Score": {
-          "mean": 2.519655091347873e-17,
-          "scale": 1.6141721525951538
+          "mean": -8.582575154903692e-17,
+          "scale": 0.4950901469927371
         },
         "Rad_Diff_HighRisk": {
           "mean": -40.10187977699392,
@@ -161,20 +162,20 @@
           "scale": 2.0021333023081818
         },
         "Habitat_Score": {
-          "mean": -4.5556992339302716e-10,
-          "scale": 0.5059086551339583
+          "mean": -4.5556992378672326e-10,
+          "scale": 0.5059086551339582
         }
       },
       "coefficients": {
-        "Clinical_Score_Z": 0.32242761636868816,
-        "Rad_Diff_HighRisk_Z": 0.1656812929840579,
-        "DL_Heterogeneity_Z": 0.16680439994871504,
-        "DL_MaxPooling_Z": 0.2114213646982658,
-        "Habitat_Score_Z": 0.32139431681209896
+        "Clinical_Score_Z": 0.23069218687945453,
+        "Rad_Diff_HighRisk_Z": 0.14859306455558316,
+        "DL_Heterogeneity_Z": 0.15890734481304586,
+        "DL_MaxPooling_Z": 0.19291958424356517,
+        "Habitat_Score_Z": 0.28934703236938353
       },
       "n_train": 282,
       "penalizer": 0.01,
-      "cutoff_train_median": -0.08050268768620825
+      "cutoff_train_median": -0.09815501588768115
     }
   },
   "reference_environment": {
@@ -188,6 +189,9 @@
     "test1": "RFS",
     "test2": "PFS exploratory transfer"
   },
-  "source_manifest_sha256": "a7d5603c426561def4d4551eaf8b446c34e8ff50674abf2e17cd943003556b60",
-  "scope": "Aggregate model parameters only; no patient records, feature matrices or outcome rows."
+  "scope": "Aggregate model parameters only; no patient records, feature matrices or outcome rows.",
+  "release": "clinical-correction-20261020",
+  "correction_note": "Joint clinical Cox is the main analysis; correctly standardized univariable weights are a post hoc sensitivity analysis. Four imaging scores unchanged. External cohorts were previously examined.",
+  "previous_release_manifest_sha256": "a7d5603c426561def4d4551eaf8b446c34e8ff50674abf2e17cd943003556b60",
+  "correction_parameter_manifest_sha256": "5ff85192bbd145bf668e1c7f29774236178d58d03d668912b8b14a41720a5d27"
 }
