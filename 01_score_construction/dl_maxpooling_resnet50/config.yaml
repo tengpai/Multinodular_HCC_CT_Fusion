@@ -31,9 +31,6 @@ dl_model_name: ResNet50
 dl_aggregation: MaxPooling
 dl_feature_dim: 2048
 
-# PCA configuration
-pca_components: 50
-
 # Correlation coefficient type (pearson or spearman)
 corr_name: pearson
 

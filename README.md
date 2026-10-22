@@ -9,9 +9,9 @@ component correlation/VIF, model contribution, calibration, proportional-hazards
 diagnostics and fusion-stage bootstrap validation. Scientific analysis functions
 are retained from the study code; this distribution reorganizes their public scope.
 
-## Clinical-score correction
+## Clinical score
 
-Release clinical-correction-20261020 uses the training-fitted nine-variable joint Cox linear predictor as the main clinical score. A separate parameter file records correctly standardized univariable weighting as a post hoc sensitivity analysis. The four imaging scores and habitat candidate are unchanged. This is a methodological correction evaluated on previously examined external cohorts, not new prospective validation.
+The main Clinical_Score is the training-fitted nine-variable multivariable Cox linear predictor. A separate parameter file provides the post hoc sensitivity specification based on standardized univariable weights. The four imaging scores and the max-H2 habitat model are unchanged from v1.0.0. Details are given in [clinical score specification](docs/clinical_score_correction.md) and in Appendix S1.1 of the manuscript.
 
 ## Installation
 
@@ -37,8 +37,9 @@ and [analysis commands](docs/reproducibility.md) for other entry points.
 
 ## Contents
 
-- `01_score_construction/`: original feature-extraction notebooks and configurations
-  for inter-nodule radiomics and fixed ImageNet convolutional-network features.
+- `01_score_construction/`: feature-extraction and score-construction notebooks and
+  configurations for inter-nodule radiomics and fixed ImageNet convolutional-network
+  features. Risk-group plots in these notebooks use the training-set median cutoff.
 - `current_analysis/`: current max-H2 selection, score fusion and evaluation.
 - `config/`: aggregate locked parameters and reference extraction settings.
 - `docs/`: input definitions and commands.
@@ -59,10 +60,11 @@ Exact study reproduction requires the approved inputs and locked artifacts.
 
 The surgical cohorts evaluate recurrence-free survival. The nonsurgical cohort
 evaluates exploratory progression-free-survival transfer and is analyzed
-separately. Bootstrap validation refits the clinical and fusion stages while fixing the four imaging scores and the clinical variable list; upstream feature selection and imputation are not repeated. Sparse-category warnings must be retained and reviewed.
+separately. Bootstrap validation refits the clinical and fusion stages while fixing the four imaging scores and the clinical variable list; upstream feature selection and imputation are not repeated.
 
 ## Citation and license
 
 Use the repository URL and the exact commit used for an analysis. `CITATION.cff`
 provides software citation metadata. The original research-use license is retained
-in `LICENSE.txt`; third-party software remains under its own licenses.
+in `LICENSE.txt`; third-party software remains under its own licenses. Version history
+is summarized in `CHANGELOG.md`.
